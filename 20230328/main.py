@@ -56,4 +56,5 @@ def insertDB(nev, kor, magassag):
 
 
 insertDB("Klaudia", 9, 160)
-selectDB(defaults["DB_TABLE"])
+rows=selectDB(defaults["DB_TABLE"])
+print(rows)
