@@ -37,10 +37,7 @@ def selectDB(_tablename, _oszlopnevek='*', _feltetel="1"):
     conn.close()
     return rows
 
-rows=selectDB(defaults["DB_TABLE"], "kor, magasság")
-print(rows)
-
-def insertDB(nev, kor, magassag):
+def doItDB(sql):
     conn=connectDB(
         _host=defaults["DB_HOST"],
         _port=defaults["DB_PORT"],
@@ -49,12 +46,59 @@ def insertDB(nev, kor, magassag):
         _database=defaults["DB_NAME"]
     )
     cursor=conn.cursor()
-    sql=f"INSERT INTO `adatok`(`név`, `kor`, `magasság`) VALUES ('{nev}', '{kor}', '{magassag}');"
     cursor.execute(sql)
     conn.commit()
     conn.close()
 
+def insertDB(nev, kor, magassag):
+    sql=f"INSERT INTO `adatok`(`név`, `kor`, `magasság`) VALUES ('{nev}', '{kor}', '{magassag}');"
+    doItDB(sql)
 
-insertDB("Klaudia", 9, 160)
+def update(tablename, mit, mire, felt=0):
+    sql=f"UPDATE {tablename} SET {mit}={mire} WHERE {felt};"
+    doItDB(sql)
+
+def deleteRows(tablename, felt=0):
+    sql=f"DELETE FROM {tablename} WHERE {felt};"
+    doItDB(sql)
+
+def truncateTable(tablename):
+    sql=f"TRUNCATE TABLE {tablename};"
+    doItDB(sql)
+    
+def dropTable(tablename):
+    sql = f"DROP TABLE {tablename};"
+    doItDB(sql)
+
+def createTable():
+    sql=f"CREATE TABLE adatok ("
+    sql+="`id` INT NOT NULL AUTO_INCREMENT ,"
+    sql+="`Név` VARCHAR(50) NOT NULL ,"
+    sql+="`Kor` INT NOT NULL ,"
+    sql+="`Magasság` INT NOT NULL ,"
+    sql+="PRIMARY KEY (`id`)"
+    sql+=");"
+    doItDB(sql)
+
+
+#createTable()
+
+#update(defaults["DB_TABLE"], "magasság", 140, "kor=9")
+#deleteRows(defaults["DB_TABLE"], "kor<18")
+#truncateTable(defaults["DB_TABLE"])
+#dropTable(defaults["DB_TABLE"])
+
+
+
+#rows=selectDB(defaults["DB_TABLE"], "kor, magasság")
+#print(rows)
+
+#insertDB("Klaudia", 9, 160)
+
+
+
 rows=selectDB(defaults["DB_TABLE"])
-print(rows)
+for i in rows:
+    print(i)
+    
+    
